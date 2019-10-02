@@ -52,7 +52,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if self.count >= self.capacity:
+            self.resize()
+
+        for i in range(self.count, key, -1):
+            self.storage[i] = self.storage[i-1]
+
+        self.storage[key] = value
+        self.count += 1
 
 
 
