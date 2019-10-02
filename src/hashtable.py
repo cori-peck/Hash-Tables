@@ -74,11 +74,11 @@ class HashTable:
 
         Fill this in.
         '''
-        index = self._hash_mod(key)
-        if self.storage[index]:
-            return self.storage[index].value
+        i = self._hash_mod(key)
+        if self.storage[i]:
+            self.storage[i] = None
         else:
-            return None
+            print("This is not the key you are looking for.")
 
 
     def retrieve(self, key):
