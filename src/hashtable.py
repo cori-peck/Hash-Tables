@@ -24,7 +24,7 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
+        return self._hash_djb2(key)
 
 
     def _hash_djb2(self, key):
@@ -33,7 +33,11 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+
+        return hash & 0xFFFFFFFF
 
 
     def _hash_mod(self, key):
@@ -55,10 +59,9 @@ class HashTable:
         if self.count >= self.capacity:
             self.resize()
 
-        for i in range(self.count, key, -1):
-            self.storage[i] = self.storage[i-1]
+        index = self._hash_mod(key)
 
-        self.storage[key] = value
+        self.storage[index] = LinkedPair(key, value)
         self.count += 1
 
 
@@ -71,7 +74,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index]:
+            return self.storage[index].value
+        else:
+            return None
 
 
     def retrieve(self, key):
@@ -82,7 +89,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if (self._hash_mod(key) not in self.storage):
+            return None
+        return self.storage[self._hash_mod][key]
 
 
     def resize(self):
