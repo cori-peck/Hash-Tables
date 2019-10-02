@@ -89,9 +89,11 @@ class HashTable:
 
         Fill this in.
         '''
-        if (self._hash_mod(key) not in self.storage):
+        i = self._hash_mod(key)
+        if self.storage[i]:
+            return self.storage[i].value
+        else:
             return None
-        return self.storage[self._hash_mod][key]
 
 
     def resize(self):
@@ -101,11 +103,20 @@ class HashTable:
 
         Fill this in.
         '''
+        if self.count < self.capacity:
+            return
+
         self.capacity *= 2
         new_storage = [None] * self.capacity
-        for i in range(self.count):
-            new_storage[i] = self.storage[i]
+        self.count = 0
+
+        for i in range(len(self.storage)):
+            if self.storage[i]:
+                hash_key = self._hash_mod(self.storage[i].key)
+                new_storage[hash_key] = self.storage[i]
+
         self.storage = new_storage
+        print(self.storage)
 
 
 
