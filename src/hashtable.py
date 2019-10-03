@@ -13,6 +13,7 @@ class HashTable:
     that accepts string keys
     '''
     def __init__(self, capacity):
+        self.count = 0
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
@@ -23,7 +24,7 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
+        return self._hash_djb2(key)
 
 
     def _hash_djb2(self, key):
@@ -32,7 +33,11 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+
+        return hash & 0xFFFFFFFF
 
 
     def _hash_mod(self, key):
@@ -51,7 +56,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if self.count >= self.capacity:
+            self.resize()
+
+        index = self._hash_mod(key)
+
+        self.storage[index] = LinkedPair(key, value)
+        self.count += 1
 
 
 
@@ -63,7 +74,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        i = self._hash_mod(key)
+        if self.storage[i]:
+            self.storage[i] = None
+        else:
+            print("This is not the key you are looking for.")
 
 
     def retrieve(self, key):
@@ -74,7 +89,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        i = self._hash_mod(key)
+        if self.storage[i]:
+            return self.storage[i].value
+        else:
+            return None
 
 
     def resize(self):
@@ -84,7 +103,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        if self.count < self.capacity:
+            return
+
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        self.count = 0
+
+        for i in range(len(self.storage)):
+            if self.storage[i]:
+                hash_key = self._hash_mod(self.storage[i].key)
+                new_storage[hash_key] = self.storage[i]
+
+        self.storage = new_storage
+        print(self.storage)
 
 
 
