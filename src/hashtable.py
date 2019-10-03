@@ -7,6 +7,12 @@ class LinkedPair:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        return (f"Key: {self.key}, Value: {self.value}")
+
+    #def __repr__(self):
+        #return (f"Key: {self.key}, Value: {self.value}")
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
@@ -35,9 +41,9 @@ class HashTable:
         '''
         hash = 5381
         for x in key:
-            hash = (( hash << 5) + hash) + ord(x)
+            hash = ( hash * 33) + ord(x)
 
-        return hash & 0xFFFFFFFF
+        return hash
 
 
     def _hash_mod(self, key):
